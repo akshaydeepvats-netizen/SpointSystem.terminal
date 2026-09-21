@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5 terminal-border">
+        <h3 class="glow-text text-center mb-4">> AUTHENTICATE_USER</h3>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label text-success">Node Username</label>
+                <input type="text" name="username" class="form-control" required>
+            </div>
+            <div class="mb-4">
+                <label class="form-label text-success">Security Access Key</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-terminal w-100 py-2">Establish Link</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

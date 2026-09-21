@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>E-Cell Central Ledger</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-black border-bottom border-secondary mb-4">
+        <div class="container">
+            <a class="navbar-brand glow-text" href="/">⚡ SPT // SQL_CORE</a>
+            <div class="navbar-nav ms-auto">
+                {% if current_user.is_authenticated %}
+                    <a class="nav-link text-white" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    {% if current_user.role in ['admin', 'owner'] %}
+                        <a class="nav-link text-warning" href="{{ url_for('management') }}">Admin Node</a>
+                    {% endif %}
+                    <a class="nav-link text-danger" href="{{ url_for('logout') }}">Disconnect</a>
+                {% else %}
+                    <a class="nav-link text-white" href="{{ url_for('login') }}">Authenticate</a>
+                    <a class="nav-link text-white" href="{{ url_for('register') }}">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-dark border border-danger text-center bg-black text-danger">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

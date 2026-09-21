@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-12"><h2 class="glow-text text-center">> ADMINISTRATIVE_CLEARANCE_MATRIX</h2></div>
+    
+    {% if current_user.role == 'owner' %}
+    <div class="col-md-6">
+        <div class="terminal-border">
+            <h4 class="glow-text">> SYSTEM_ACCESS_PROMOTION</h4>
+            <form method="POST">
+                <input type="hidden" name="action" value="assign_role">
+                <div class="mb-3">
+                    <label class="form-label">Select Registered Cluster Profile</label>
+                    <select name="user_id" class="form-select">
+                        {% for user in all_users %}
+                            <option value="{{ user.id }}">{{ user.username }} ({{ user.role }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Role Privilege Allocation</label>
+                    <select name="role" class="form-select">
+                        <option value="student">Student Status</option>
+                        <option value="admin">Admin Status (Replaces to 1000 credits on first access)</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-terminal w-100">Commit Clearance Configuration</button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="col-md-6">
+        <div class="terminal-border">
+            <h4 class="text-danger">> ATTENDANCE_VIOLATION_PENALTY</h4>
+            <form method="POST">
+                <input type="hidden" name="action" value="deduct_points">
+                <div class="mb-3">
+                    <label class="form-label">Select Deficit Student Node</label>
+                    <select name="student_id" class="form-select border-danger">
+                        {% for student in students %}
+                            <option value="{{ student.id }}">{{ student.username }} (Available: {{ student.points | int }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="row g-2 mb-3">
+                    <div class="col-6"><input type="number" name="amount" class="form-control border-danger" placeholder="Value Deduct" required></div>
+                    <div class="col-6"><input type="text" name="reason" class="form-control border-danger" placeholder="Infraction Code" required></div>
+                </div>
+                <button type="submit" class="btn btn-outline-danger w-100 font-weight-bold">Enforce Deduction Matrix</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="terminal-border">
+            <h4 class="glow-text">> INITIATE_OPERATIONAL_MILESTONE</h4>
+            <form method="POST">
+                <input type="hidden" name="action" value="create_task">
+                <div class="mb-3">
+                    <label class="form-label">Project / Milestone Headline</label>
+                    <input type="text" name="title" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Assign Target Account</label>
+                    <select name="student_id" class="form-select">
+                        {% for student in students %}
+                            <option value="{{ student.id }}">{{ student.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Reward Points Vector</label>
+                    <input type="number" name="points" class="form-control" min="1" required>
+                </div>
+                <button type="submit" class="btn btn-terminal w-100">Deploy Milestone Matrix</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="terminal-border">
+            <h4 class="glow-text">> VERIFICATION_SIGN_OFF_TERMINAL</h4>
+            <table class="table">
+                <thead><tr><th>Milestone Target</th><th>Target Profile</th><th>Reward</th><th>Action</th></tr></thead>
+                <tbody>
+                    {% for task in pending_tasks %}
+                    <tr>
+                        <td>{{ task.title }}</td>
+                        <td>{{ task.assigned_user.username }}</td>
+                        <td class="text-success">+{{ task.points_reward | int }}</td>
+                        <td>
+                            <form method="POST">
+                                <input type="hidden" name="action" value="complete_task">
+                                <input type="hidden" name="task_id" value="{{ task.id }}">
+                                <button type="submit" class="btn btn-sm btn-terminal">Sign-Off</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="terminal-border h-100">
+            <h4 class="glow-text">> LIVE_NODE_INFO</h4>
+            <hr class="border-secondary">
+            <p><b>Identity Code:</b> {{ current_user.username }}</p>
+            <p><b>Access Level:</b> <span class="badge bg-dark border border-success text-success">{{ 'STUDENT' if current_user.role == 'owner' else current_user.role.upper() }}</span></p>
+            <p><b>Credit Inventory:</b> <span class="text-warning font-weight-bold">{% if current_user.role == 'owner' %}100{% else %}{{ current_user.points | int }}{% endif %} Credits</span></p>
+            <p><b>Matrix Rank:</b> <span class="fs-5 text-white glow-text">[{{ current_user.get_rank() }}]</span></p>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="terminal-border h-100">
+            <h4 class="glow-text">> TRANSACTIONS_ROUTING_PANEL</h4>
+            <hr class="border-secondary">
+            <form method="POST">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-success">Target Cluster Node ID</label>
+                        <input type="text" name="recipient" class="form-control" placeholder="Target identity name" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label text-success">Transfer Value</label>
+                        <input type="number" name="amount" class="form-control" min="1" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-terminal w-100 mt-4">Authorize Points Dispersal</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="terminal-border">
+            <h4 class="glow-text mb-3">> SYSTEM_LEADERBOARD_MATRIX</h4>
+            <table class="table">
+                <thead><tr><th>Node ID</th><th>Access Role</th><th>Balance</th><th>Rank</th></tr></thead>
+                <tbody>
+                    {% for item in leaderboard_data %}
+                    <tr {% if item.username == current_user.username %}class="table-dark border border-success"{% endif %}>
+                        <td>{{ item.username }}</td>
+                        <td>{{ item.role.upper() }}</td>
+                        <td>{{ item.points }}</td>
+                        <td><b class="text-success">[{{ item.rank }}]</b></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="terminal-border">
+            <h4 class="glow-text mb-3">> CENTRAL_LEDGER_TX_STREAM</h4>
+            <table class="table">
+                <thead><tr><th>Source</th><th>Destination</th><th>Value</th></tr></thead>
+                <tbody>
+                    {% for tx in history %}
+                    <tr><td>{{ tx.sender }}</td><td>{{ tx.receiver }}</td><td class="text-warning">{{ tx.amount }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

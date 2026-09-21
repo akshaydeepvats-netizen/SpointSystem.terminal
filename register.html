@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5 terminal-border">
+        <h3 class="glow-text text-center mb-4">> INITIALIZE_NEW_NODE</h3>
+        <form method="POST">
+            <div class="mb-3">
+                <label class="form-label text-success">Choose Identity Name</label>
+                <input type="text" name="username" class="form-control" required autocomplete="off">
+            </div>
+            <div class="mb-4">
+                <label class="form-label text-success">Access Key Cipher</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+            {% if not owner_exists %}
+            <div class="mb-4 form-check border border-warning p-3 bg-black">
+                <input type="checkbox" name="become_owner" id="become_owner" class="form-check-input ms-1 me-2">
+                <label class="form-check-label text-warning" for="become_owner">Claim Master Node Ownership Protocol</label>
+            </div>
+            {% endif %}
+            <button type="submit" class="btn btn-terminal w-100 py-2">Create Identity</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
