@@ -247,7 +247,10 @@ def logout():
     logout_user()
     return redirect(url_for('landing'))
 
+# Create the database tables inside Render's context wrapper safely
+with app.app_context():
+    db.create_all()
+
+# This tells the production server (Gunicorn) how to find your app instance
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True, host='0.0.0.0', port=5000)
