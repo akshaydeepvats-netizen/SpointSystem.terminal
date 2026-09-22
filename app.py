@@ -7,7 +7,12 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-only-secret-key')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ecell_terminal.db'
+
+# Render's working directory can change between deployments. Store SQLite
+# inside Flask's writable instance directory and use an absolute path.
+os.makedirs(app.instance_path, exist_ok=True)
+database_path = os.path.join(app.instance_path, 'ecell_terminal.db')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{database_path}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -252,5 +257,10 @@ with app.app_context():
     db.create_all()
 
 # This tells the production server (Gunicorn) how to find your app instance
+@app.route('/health')
+def health():
+    return 'OK', 200
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(debug=False, host='0.0.0.0', port=port)
