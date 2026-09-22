@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'ecell_ultra_stealth_secret_key'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'dev-only-secret-key')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///ecell_terminal.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
